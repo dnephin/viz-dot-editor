@@ -1,0 +1,28 @@
+
+meta:
+  project: vizjs
+
+image=dev:
+  image: vizjs-dev
+  target: dev
+  context: .
+
+image=dist:
+  image: dnephin/vizjs-dev
+  context: .
+  tags: ['latest', '{unique}']
+
+mount=source:
+  bind: .
+  path: /files
+
+job=shell:
+  use: dev
+  interactive: true
+  working-dir: /files
+  mounts: [source]
+  command: sh
+
+job=run:
+  use: dist
+  interactive: true
