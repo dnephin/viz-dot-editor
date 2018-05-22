@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Viz.js</title>
+    <title>viz dot editor</title>
     <style>
 
     #app {
@@ -68,8 +68,11 @@
       font-family: sans-serif;
     }
     
-    #header b {
+    #header a {
+      text-decoration: none;
       font-size: 18px;
+      font-family: 'Noto Sans', Helvetica, sans-serif;
+      color: #333;
     }
     
     #options {
@@ -168,7 +171,8 @@
     
     <div id="app">
       <div id="header">
-        <b>Viz.js</b>
+        <a href="https://github.com/dnephin/viz.js/tree/production">
+          <b>viz dot editor</b></a>
       </div>
       <div id="panes" class="split split-horizontal">
         <div id="editor" class="split"># http://www.graphviz.org/content/cluster
@@ -219,7 +223,7 @@ digraph G {
               Format
               <select>
                 <option selected>svg</option>
-                <option>png-image-element</option>
+                <option>png</option>
                 <option>json</option>
                 <option>xdot</option>
                 <option>plain</option>
@@ -330,7 +334,7 @@ digraph G {
       // Instead of asking for png-image-element directly, which we can't do in a worker,
       // ask for SVG and convert when updating the output.
       
-      if (params.options.format == "png-image-element") {
+      if (params.options.format == "png") {
         params.options.format = "svg";
       }
       
@@ -378,7 +382,7 @@ digraph G {
         window.addEventListener('resize', function(e) {
           panZoom.resize();
         });
-      } else if (document.querySelector("#format select").value == "png-image-element") {
+      } else if (document.querySelector("#format select").value == "png") {
         var image = Viz.svgXmlToPngImageElement(result);
         graph.appendChild(image);
       } else {
