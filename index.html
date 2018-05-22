@@ -61,18 +61,30 @@
     }
 
     #heaader,
-    #heaader b,
     #options label,
     #options select,
     #options {
-      font-family: sans-serif;
+      font-family: 'Noto Sans', Helvetica, sans-serif;
+    }
+    #options label {
+      font-weight: bold;
+      font-size: 0.9em;
     }
     
-    #header a {
+    #header h1 {
+      display: inline;
+      margin: 10px;
+    }
+    #header h1 a {
       text-decoration: none;
-      font-size: 18px;
+      font-size: 20px;
       font-family: 'Noto Sans', Helvetica, sans-serif;
       color: #333;
+    }
+    #header a {
+      font-family: 'Noto Sans', Helvetica, sans-serif;
+      color: #555;
+      text-decoration: none;
     }
     
     #options {
@@ -164,15 +176,38 @@
       height: 100%;
       float: left;
     }
-    
+
+    .icon {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      overflow: hidden;
+      margin: 0 5px;
+    }
+		button {
+			padding: 5px 2px;
+			margin: 0;
+		}	
+
+  	input[type=checkbox] {
+    	display:none;
+ 		}
+  	input[type=checkbox] + label {
+   	}
+   	input[type=checkbox]:checked {
+    }  
     </style>
   </head>
   <body>
     
     <div id="app">
       <div id="header">
-        <a href="https://github.com/dnephin/viz.js/tree/production">
-          <b>viz dot editor</b></a>
+        <h1>
+          <a href="https://github.com/dnephin/viz.js/tree/production">
+            viz dot editor
+  				</a>
+        </h1>
+        <a href="http://www.graphviz.org/doc/info/">dot docs</a>
       </div>
       <div id="panes" class="split split-horizontal">
         <div id="editor" class="split"># http://www.graphviz.org/content/cluster
@@ -232,14 +267,17 @@ digraph G {
             </label>
 
             <label id="raw">
-              Raw
+              <img src="img/file-text2.svg" class="icon" alt="Source">
               <input type="checkbox">
             </label>
             <label id="filename">
               Filename
               <input type="text">
+            <button id="download">
+              <img src="img/folder-download.svg" class="icon" alt="download dot file"> 
+            </button>
             </label>
-            <a id="download" href="#">download</a>
+
           </div>
           <div id="output">
             <div id="error"></div>
@@ -259,7 +297,7 @@ digraph G {
 
     var resizeEvent = new Event("paneresize");
     Split(['#editor', '#graph'], {
-      sizes: [25, 75],
+      sizes: [30, 70],
       onDragEnd: function() { 
         var svgOutput = document.getElementById("svg_output");
         if (svgOutput != null) {
@@ -370,7 +408,6 @@ digraph G {
 
         panZoom = svgPanZoom(svg, {
           zoomEnabled: true,
-          controlIconsEnabled: true,
           fit: true,
           center: true,
           minZoom: 0.1
