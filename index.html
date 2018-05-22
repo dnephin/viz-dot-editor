@@ -252,6 +252,14 @@ digraph G {
     var worker;
     var result;
 
+    function loadSaved() {
+      var saved = localStorage.getItem("vizjs/source");
+      if (saved !== null) {
+        editor.getSession().getDocument().setValue(saved);
+      }
+    }
+    loadSaved();
+
     function updateGraph() {
       if (worker) {
         worker.terminate();
@@ -360,6 +368,8 @@ digraph G {
 
     editor.on("change", function() {
       updateGraph();
+      var source = editor.getSession().getDocument().getValue();
+      localStorage.setItem("vizjs/source", source);
       beforeUnloadMessage = "Your changes will not be saved.";
     });
     
