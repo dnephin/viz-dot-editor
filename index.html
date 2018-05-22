@@ -59,6 +59,14 @@
       border-bottom: 1px solid #ccc;
       padding: 8px;
     }
+
+    #heaader,
+    #heaader b,
+    #options label,
+    #options select,
+    #options {
+      font-family: sans-serif;
+    }
     
     #header b {
       font-size: 18px;
@@ -72,6 +80,11 @@
     
     #options label {
       margin-right: 8px;
+    }
+
+    #options select,
+    #options input {
+      padding: 5px;
     }
     
     #options #raw.disabled {
@@ -191,7 +204,7 @@ digraph G {
         <div id="graph" class="split">
           <div id="options">
             <label id="engine">
-              Engine:
+              Engine
               <select>
                 <option>circo</option>
                 <option selected>dot</option>
@@ -203,7 +216,7 @@ digraph G {
             </label>
             
             <label id="format">
-              Format:
+              Format
               <select>
                 <option selected>svg</option>
                 <option>png-image-element</option>
@@ -213,10 +226,16 @@ digraph G {
                 <option>ps</option>
               </select>
             </label>
-            
+
             <label id="raw">
-              <input type="checkbox"> Show raw output
+              Raw
+              <input type="checkbox">
             </label>
+            <label id="filename">
+              Filename
+              <input type="text">
+            </label>
+            <a id="download" href="#">download</a>
           </div>
           <div id="output">
             <div id="error"></div>
@@ -256,6 +275,10 @@ digraph G {
       var saved = localStorage.getItem("vizjs/source");
       if (saved !== null) {
         editor.getSession().getDocument().setValue(saved);
+      }
+      var filename = localStorage.getItem("vizjs/filename");
+      if (filename !== null) {
+        document.querySelector("#filename input").value = filename;
       }
     }
     loadSaved();
@@ -398,7 +421,27 @@ digraph G {
     });
     
     updateGraph();
-    
+
+    function download(filename, content) {
+      filename = filename || "graph.dot";
+      var a = document.createElement('a');
+      var blob = new Blob([content], {'type': 'application/octet-stream'});
+      a.href = window.URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+    }
+
+    document.querySelector("#download").addEventListener("click", function(e) {
+      var filename = document.querySelector("#filename input").value;
+      var source = editor.getSession().getDocument().getValue();
+      download(filename, source);
+    });
+
+    document.querySelector("#filename input").addEventListener("change", function(e) {
+      var filename = document.querySelector("#filename input").value;
+      localStorage.setItem("vizjs/filename", filename);
+    });
+
     </script>
     
   </body>
