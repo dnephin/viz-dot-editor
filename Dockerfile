@@ -1,7 +1,9 @@
-FROM    alpine:3.7 as dev
-RUN     apk add --no-cache lighttpd
+FROM    node:10-alpine as dev
+RUN     npm install -g browser-sync
 
-FROM    dev
+
+FROM    alpine:3.7 as prod
+RUN     apk add --no-cache lighttpd
 COPY    index.html /files/
 COPY    worker.js /files/
 COPY    bower_components /files/bower_components
