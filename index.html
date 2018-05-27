@@ -102,10 +102,6 @@
       padding: 5px;
     }
     
-    #options #raw.disabled {
-      opacity: 0.5;
-    }
-    
     #output svg {
       position: absolute;
       top: 0;
@@ -188,14 +184,6 @@
 			padding: 5px 2px;
 			margin: 0;
 		}	
-
-  	input[type=checkbox] {
-    	display:none;
- 		}
-  	input[type=checkbox] + label {
-   	}
-   	input[type=checkbox]:checked {
-    }  
     </style>
   </head>
   <body>
@@ -266,16 +254,15 @@ digraph G {
               </select>
             </label>
 
-            <label id="raw">
-              <img src="img/file-text2.svg" class="icon" alt="Source">
-              <input type="checkbox">
-            </label>
             <label id="filename">
-              Filename
+              Name
               <input type="text">
-            <button id="download" title="Download source">
-              <img src="img/folder-download.svg" class="icon" alt="download dot file"> 
-            </button>
+              <button id="download" title="Download output">
+                <img src="img/folder-download.svg" class="icon" alt="download"> 
+              </button>
+              <button id="dlsource" title="Download source">
+                <img src="img/file-text2.svg" class="icon" alt="source">
+              </button>
             </label>
 
           </div>
@@ -371,7 +358,6 @@ digraph G {
       
       // Instead of asking for png-image-element directly, which we can't do in a worker,
       // ask for SVG and convert when updating the output.
-      
       if (params.options.format == "png") {
         params.options.format = "svg";
       }
@@ -401,7 +387,7 @@ digraph G {
         return;
       }
       
-      if (document.querySelector("#format select").value == "svg" && !document.querySelector("#raw input").checked) {
+      if (document.querySelector("#format select").value == "svg") {
         var svg = parser.parseFromString(result, "image/svg+xml").documentElement;
         svg.id = "svg_output";
         graph.appendChild(svg);
@@ -445,23 +431,11 @@ digraph G {
       updateGraph();
     });
 
-    document.querySelector("#format select").addEventListener("change", function() {
-      if (document.querySelector("#format select").value === "svg") {
-        document.querySelector("#raw").classList.remove("disabled");
-        document.querySelector("#raw input").disabled = false;
-      } else {
-        document.querySelector("#raw").classList.add("disabled");
-        document.querySelector("#raw input").disabled = true;
-      }
-      
+    updateGraph();
+
+    document.querySelector("#format select").addEventListener("change", function(e) {
       updateGraph();
     });
-
-    document.querySelector("#raw input").addEventListener("change", function() {
-      updateOutput();
-    });
-    
-    updateGraph();
 
     function download(filename, content) {
       filename = filename || "graph.dot";
@@ -472,10 +446,16 @@ digraph G {
       a.click();
     }
 
-    document.querySelector("#download").addEventListener("click", function(e) {
+    document.querySelector("#dlsource").addEventListener("click", function(e) {
       var filename = document.querySelector("#filename input").value;
       var source = editor.getSession().getDocument().getValue();
-      download(filename, source);
+      download(filename + ".dot", source);
+    });
+
+    document.querySelector("#download").addEventListener("click", function(e) {
+      var filename = document.querySelector("#filename input").value;
+      var ext = document.querySelector("#format select").value;
+      download(filename + "." + ext, result);
     });
 
     document.querySelector("#filename input").addEventListener("change", function(e) {
